@@ -2,7 +2,6 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Post', {
         title: {
             type: DataTypes.STRING,
-            unique: true,
             allowNull: false
         },
 
@@ -15,6 +14,25 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             unique: false,
             default: true
+        },
+
+        author_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+
+            references: {
+                model: "Authors",
+                key: 'id'
+            }
         }
-    })
+    },
+        {
+            indexes: [
+                {
+                    unique: true,
+                    fields: ['title', 'author_id']
+                }
+            ]
+        }
+    )
 };

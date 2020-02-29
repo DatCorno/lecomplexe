@@ -16,7 +16,7 @@ module.exports = (server, db) => {
 
     server.post('/posts/', async (req, res) => {
         try {
-            const post = db.Post.create({
+            post = await db.Post.create({
                 title: req.body.title,
                 content: req.body.content,
                 draft: req.body.draft,
@@ -31,7 +31,7 @@ module.exports = (server, db) => {
 
     server.put('/posts/:id', async (req, res) => {
         try {
-            const post = db.Post.update({
+            post = await db.Post.update({
                 title: req.body.title,
                 content: req.body.content,
                 draft: req.body.draft,
@@ -54,7 +54,7 @@ module.exports = (server, db) => {
 
     server.delete('/posts/:id', async (req, res) => {
         try {
-            const post = db.Post.destroy({ where: {id: req.params.id} })
+            post = await db.Post.destroy({ where: {id: req.params.id} })
 
             if (!post)
                 throw `Could not find post with id ${req.params.id}`
@@ -67,18 +67,16 @@ module.exports = (server, db) => {
     })
 
     server.get('/posts/:id', async (req, res) => {
-        var post;
         try {
-            post = db.Post.findOne({ where: {id: req.params.id} }).then( (result) => res.json(result))
+            post = await db.Post.findOne({ where: {id: req.params.id} })
 
             if (!post)
                 throw `Could not find post with id ${req.params.id}`
         }
         catch (error) {
-            return util.send(res, 'error', error.message, 404)
+            return util.send(res, 'error', error, 404)
         }
 
-        console.log("hello")
         return util.send(res, 'success', 'Fetched post.', 200, post)
     })
 }

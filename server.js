@@ -1,13 +1,15 @@
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 const next = require('next');
-const Sequelize = require('sequelize');
 const finale = require('finale-rest');
 const bodyParser = require('body-parser');
+const passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy;
 
+const crypto = require('./crypto');
 const db = require('./models');
-
-const apiPosts = require(__dirname + "/api/post")
+const apiPosts = require('./api/post')
 
 // Get constants from the environment variables
 const dev = process.env.NODE_DEV !== 'production';
@@ -22,12 +24,28 @@ app.prepare()
     // Init Express server
     const server = express()
 
+    setupPassport()
+
+    // TODO Change this to production
+    sess = {
+        secret: 'allo',
+        cookie: {},
+        saveUninitialized: false,
+        resave: false
+    }
+
+    server.use(session(sess))
     server.use(bodyParser.json())
     server.use(bodyParser.urlencoded({ extended: false }))
-
-    var sequelize = setupDatabase()
+    server.use(passport.initialize())
+    server.use(passport.session())
 
     apiPosts(server, db)
+
+    server.post('/login', passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login' 
+    }))
 
     // Forward all requests to pages to the Next.JS handler
     server.get('*', (req, res) => {
@@ -47,6 +65,35 @@ app.prepare()
     process.exit(1)
 });
 
-setupDatabase = () => {
+setupPassport = () => {
+    passport.use(new LocalStrategy(
+        (username, password, done) => {
+            db.Author.findOne({ where: { username: username }}).then((author) => {
+                if (!author) {
+                    return done(null, false, { message: 'Incorrect username' });
+                }
 
+                if (crypto.hash(password, author.salt) !== author.password) {
+                    return done(null, false, { message: 'Wrong password' });
+
+                }
+
+                return done(null, author);
+            }).catch((error) => {
+                return done(error);
+            })
+        })
+    );
+
+    passport.serializeUser((user, done) => {
+      done(null, user.id);
+    });
+
+    passport.deserializeUser((id, done) => {
+        db.Author.findOne({ where: {id: id}}).then((author) => {
+            done(null, user);
+        }).catch((error) => {
+            done(error)
+        });
+    });
 }

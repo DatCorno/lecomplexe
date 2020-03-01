@@ -8,11 +8,12 @@ var basename  = path.basename(module.filename);
 //var config    = require(__dirname + '/../config/config.json')[env];
 var db        = {};
 
+//TODO Change this to use env variables
 //if (config.use_env_variable) {
 //  var sequelize = new Sequelize(process.env[config.use_env_variable]);
 //} else {
   var sequelize = new Sequelize("lecomplexe", "corneau", "zermelo", {dialect: "postgresql"});
-//}
+//
 
 fs
   .readdirSync(__dirname)

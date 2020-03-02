@@ -1,19 +1,15 @@
 'use strict';
 
-var fs        = require('fs');
-var path      = require('path');
-var Sequelize = require('sequelize');
-var basename  = path.basename(module.filename);
-//var env       = process.env.NODE_ENV || 'development';
-//var config    = require(__dirname + '/../config/config.json')[env];
-var db        = {};
+const fs        = require('fs');
+const path      = require('path');
+const Sequelize = require('sequelize');
+const basename  = path.basename(module.filename);
+const dotenv = require('dotenv');
 
-//TODO Change this to use env variables
-//if (config.use_env_variable) {
-//  var sequelize = new Sequelize(process.env[config.use_env_variable]);
-//} else {
-  var sequelize = new Sequelize("lecomplexe", "corneau", "zermelo", {dialect: "postgresql"});
-//
+dotenv.config()
+
+var db        = {};
+const sequelize = new Sequelize(process.env.CONNECTION_STRING);
 
 fs
   .readdirSync(__dirname)

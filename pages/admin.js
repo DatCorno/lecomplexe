@@ -3,7 +3,7 @@ import PostPreview from "../components/PostPreview";
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch'
 
-function Index({ posts }) {
+function Admin({ posts }) {
     const _posts = posts.map((post) => {
         return (
         <li key={post.id}>
@@ -19,11 +19,11 @@ function Index({ posts }) {
     )
 }
 
-Index.getInitialProps = async () => {
-    const res = await fetch('http://localhost:3000/api/posts')
+Admin.getInitialProps = async ({ query: { id }}) => {
+    const res = await fetch(`http://localhost:3000/api/posts/author/${id}`)
     const json = await res.json()
 
     return { posts: json.data }
 }
 
-export default Index
+export default Admin

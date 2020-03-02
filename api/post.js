@@ -1,11 +1,9 @@
-const Util = require('../utils');
-
-const util = new Util();
+const util = require('../utils');
 
 module.exports = (server, db) => {
-    server.get('/posts/', async (req, res, next) => {
+    server.get('/api/posts/', async (req, res, next) => {
         try {
-            result = await db.Post.findAll()
+            result = await db.Post.findAll({}, { where: { draft: false }})
         }
         catch (error) {
             return util.send(res, 'error', error.message, 400)
@@ -14,7 +12,22 @@ module.exports = (server, db) => {
         return util.send(res, 'success', 'Fetched all posts.', 200, result)
     })
 
-    server.post('/posts/', async (req, res) => {
+    server.get('/api/posts/author/:id', async (req, res, next) => {
+        try {
+            result = await db.Post.findAll({}, { where: { draft: false, id: req.params.id }})
+        }
+        catch (error) {
+            return util.send(res, 'error', error.message, 400)
+        }
+
+        return util.send(res, 'success', 'Fetched all posts.', 200, result)
+    })
+
+    server.post('/api/posts/', async (req, res) => {
+        if (!req.session.passport) {
+            return util.send(res, 'failure', 'You need to be authenticated to do this.', 401)
+        }
+
         try {
             post = await db.Post.create({
                 title: req.body.title,
@@ -29,7 +42,11 @@ module.exports = (server, db) => {
         return util.send(res, 'success', 'Created post.', 201, post)
     })
 
-    server.put('/posts/:id', async (req, res) => {
+    server.put('/api/posts/:id', async (req, res) => {
+        if (!req.session.passport) {
+            return util.send(res, 'failure', 'You need to be authenticated to do this.', 401)
+        }
+
         try {
             post = await db.Post.update({
                 title: req.body.title,
@@ -52,7 +69,11 @@ module.exports = (server, db) => {
         return util.send(res, 'success', 'Updated post.', 200, post) 
     })
 
-    server.delete('/posts/:id', async (req, res) => {
+    server.delete('/api/posts/:id', async (req, res) => {
+        if (!req.session.passport) {
+            return util.send(res, 'failure', 'You need to be authenticated to do this.', 401)
+        }
+
         try {
             post = await db.Post.destroy({ where: {id: req.params.id} })
 
@@ -66,7 +87,7 @@ module.exports = (server, db) => {
         return util.send(res, 'success', 'Deleted post', 200, post)
     })
 
-    server.get('/posts/:id', async (req, res) => {
+    server.get('/api/posts/:id', async (req, res) => {
         try {
             post = await db.Post.findOne({ where: {id: req.params.id} })
 

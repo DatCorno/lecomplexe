@@ -4,7 +4,7 @@ const PostPreview = (props) => (
     <div>
         <h1>{props.title}</h1>
         <p>{props.text}</p>
-        <Link href={`/posts?title=${props.title}`}>
+        <Link href={`/posts/${props.id}`}>
             <a>Read More</a>
         </Link>
     </div>

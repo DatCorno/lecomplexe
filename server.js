@@ -1,15 +1,15 @@
-const express = require('express');
-const session = require('express-session');
-const path = require('path');
-const next = require('next');
-const finale = require('finale-rest');
-const bodyParser = require('body-parser');
-const passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
+const express = require('express'); // Express server
+const session = require('express-session'); // Express session handler
+const next = require('next'); // NextJS module
+const bodyParser = require('body-parser'); // Body JSON parser middleware
+const dotenv = require('dotenv'); // Environment variable support
 
-const crypto = require('./crypto');
+const auth = require('./middlewares/passport');
 const db = require('./models');
-const apiPosts = require('./api/post')
+const apiPosts = require('./api/post');
+const util = require('./utils');
+
+dotenv.config();
 
 // Get constants from the environment variables
 const dev = process.env.NODE_DEV !== 'production';
@@ -24,11 +24,9 @@ app.prepare()
     // Init Express server
     const server = express()
 
-    setupPassport()
-
     // TODO Change this to production
     sess = {
-        secret: 'allo',
+        secret: process.env.CONFIGURATION_SECRET,
         cookie: {},
         saveUninitialized: false,
         resave: false
@@ -37,15 +35,23 @@ app.prepare()
     server.use(session(sess))
     server.use(bodyParser.json())
     server.use(bodyParser.urlencoded({ extended: false }))
-    server.use(passport.initialize())
-    server.use(passport.session())
 
-    apiPosts(server, db)
+    auth.setupPassport(server)
 
-    server.post('/login', passport.authenticate('local', {
-        successRedirect: '/',
+    apiPosts(server, db) // TODO Move to router for posts
+
+    server.post('/login', auth.passport.authenticate('local', {
+        successRedirect: '/admin',
         failureRedirect: '/login' 
     }))
+
+    server.get('/admin', (req, res) => {
+        if (!req.session.passport) {
+            return util.send(res, 'failure', 'You need to be authenticated to do this', 401)
+        }
+
+        return app.render(req, res, '/admin', { id: req.session.passport.user })
+    })
 
     // Forward all requests to pages to the Next.JS handler
     server.get('*', (req, res) => {
@@ -64,36 +70,3 @@ app.prepare()
     console.error(ex.stack)
     process.exit(1)
 });
-
-setupPassport = () => {
-    passport.use(new LocalStrategy(
-        (username, password, done) => {
-            db.Author.findOne({ where: { username: username }}).then((author) => {
-                if (!author) {
-                    return done(null, false, { message: 'Incorrect username' });
-                }
-
-                if (crypto.hash(password, author.salt) !== author.password) {
-                    return done(null, false, { message: 'Wrong password' });
-
-                }
-
-                return done(null, author);
-            }).catch((error) => {
-                return done(error);
-            })
-        })
-    );
-
-    passport.serializeUser((user, done) => {
-      done(null, user.id);
-    });
-
-    passport.deserializeUser((id, done) => {
-        db.Author.findOne({ where: {id: id}}).then((author) => {
-            done(null, user);
-        }).catch((error) => {
-            done(error)
-        });
-    });
-}

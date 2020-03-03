@@ -6,7 +6,7 @@ const dotenv = require('dotenv'); // Environment variable support
 
 const auth = require('./middlewares/passport');
 const db = require('./models');
-const apiPosts = require('./api/post');
+const api = require('./api');
 const util = require('./utils');
 
 dotenv.config();
@@ -38,7 +38,7 @@ app.prepare()
 
     auth.setupPassport(server)
 
-    apiPosts(server, db) // TODO Move to router for posts
+    server.use('/api', api)
 
     server.post('/login', auth.passport.authenticate('local', {
         successRedirect: '/admin',

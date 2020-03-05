@@ -1,8 +1,8 @@
-import ContainerLayout from "../components/ContainerLayout.js";
+import Layout from "../components/Layout.js";
 
 export default function Login() {
     return (
-        <ContainerLayout>
+        <Layout>
             <form action="/login" method="post">
                 <div>
                     <label>Username:</label>
@@ -16,7 +16,7 @@ export default function Login() {
                     <input type="submit" value="Log In"/>
                 </div>
             </form>
-        </ContainerLayout>
+        </Layout>
     );
 }
 

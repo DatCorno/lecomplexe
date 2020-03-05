@@ -1,21 +1,28 @@
-import ContainerLayout from "../components/ContainerLayout.js";
+import ListGroup from 'react-bootstrap/ListGroup'
+
+import Layout from '../components/Layout';
 import PostPreview from "../components/PostPreview";
 import Link from 'next/link';
-import fetch from 'isomorphic-unfetch'
+import fetch from 'isomorphic-unfetch';
+
+function getPosts(posts) {
+    return posts.map((post) => {
+        return (
+            <ListGroup.Item>
+                <PostPreview title={post.title} text={post.content} id={post.id}/>
+            </ListGroup.Item>
+        )
+    });
+}
 
 function Index({ posts }) {
-    const _posts = posts.map((post) => {
-        return (
-        <li key={post.id}>
-        <PostPreview title={post.title} text={post.content} id={post.id}/>
-        </li>
-        )
-    })
 
     return (
-        <ContainerLayout>
-            <ul> {_posts} </ul>
-        </ContainerLayout>
+        <Layout>
+            <ListGroup>
+                {getPosts(posts)}
+            </ListGroup>
+        </Layout>
     )
 }
 

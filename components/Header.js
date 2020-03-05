@@ -1,13 +1,9 @@
 import Link from "next/link";
 
-const linkStyle = {
-    marginRight: 15
-};
-
 const Header = () => (
     <div>
         <Link href="/">
-            <a style={linkStyle}>Le Complexe</a>
+            <a>Le Complexe</a>
         </Link>
     </div>
 );

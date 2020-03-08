@@ -1,0 +1,11 @@
+{
+    "presets": [
+        [
+            "next/babel", {
+                "present-env": {
+                    "modules": "commonjs"
+                }
+            }
+        ]
+    ]
+}

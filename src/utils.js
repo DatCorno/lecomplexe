@@ -12,4 +12,4 @@ class Util {
   }
 }
 
-module.exports = new Util()
+export default new Util()

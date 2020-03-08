@@ -1,10 +1,12 @@
 'use strict';
 
-const fs        = require('fs');
-const path      = require('path');
-const Sequelize = require('sequelize');
+import fs        from 'fs';
+import path      from 'path';
+import Sequelize from 'sequelize';
+
 const basename  = path.basename(module.filename);
-const dotenv = require('dotenv');
+
+import dotenv    from 'dotenv';
 
 dotenv.config()
 
@@ -30,4 +32,4 @@ Object.keys(db).forEach(function(modelName) {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;

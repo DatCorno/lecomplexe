@@ -1,13 +1,13 @@
-const express = require('express'); // Express server
-const session = require('express-session'); // Express session handler
-const next = require('next'); // NextJS module
-const bodyParser = require('body-parser'); // Body JSON parser middleware
-const dotenv = require('dotenv'); // Environment variable support
+import express from 'express' // Express server
+import session from 'express-session'; // Express session handler
+import next from 'next'; // NextJS module
+import bodyParser from 'body-parser'; // Body JSON parser middleware
+import dotenv from 'dotenv'; // Environment variable support
 
-const auth = require('./middlewares/passport');
-const db = require('./models');
-const api = require('./api');
-const util = require('./utils');
+import auth from './middlewares/passport';
+import db from './models';
+import api from './api';
+import util from './utils';
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.prepare()
     const server = express()
 
     // TODO Change this to production
-    sess = {
+    const sess = {
         secret: process.env.CONFIGURATION_SECRET,
         cookie: {},
         saveUninitialized: false,

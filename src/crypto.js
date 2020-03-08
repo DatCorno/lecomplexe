@@ -1,4 +1,4 @@
-const clib = require('crypto')
+import clib from 'crypto';
 
 var crypto = {}
 
@@ -12,4 +12,4 @@ crypto.hash = (password, salt) => {
     return hash.digest('hex');
 };
 
-module.exports = crypto;
+export default crypto;

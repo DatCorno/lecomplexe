@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const util = require('../utils');
-const db = require('../models');
+
+import util from '../utils';
+import db from '../models';
 
 
 router.get('/', (req, res) => {
@@ -98,4 +99,4 @@ router.get('/:id', (req, res) => {
     })
 })
 
-module.exports = router
+export default router

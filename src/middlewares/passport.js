@@ -1,14 +1,14 @@
-const passport = require('passport'), // PassportJS authentification middleware
-    LocalStrategy = require('passport-local').Strategy; // Strategy for username/password auth.
+import passport from 'passport'; // PassportJS authentification middleware
+import Strategy from 'passport-local';
 
-const db = require('../models');
-const crypto = require('../crypto'); // TODO switch to bcrypt
+import db from '../models';
+import crypto from '../crypto'; // TODO switch to bcrypt
 
-auth = {}
+const auth = {}
 
 auth.setupPassport = (server) => {
     // Setup LocalStrategy for username/password auth.
-    passport.use(new LocalStrategy(
+    passport.use(new Strategy(
         (username, password, done) => {
             db.Author.findOne({ where: { username: username }})
             .then((author) => {
@@ -47,4 +47,4 @@ auth.setupPassport = (server) => {
 
 auth.passport = passport
 
-module.exports = auth
+export default auth

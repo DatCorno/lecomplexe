@@ -16,7 +16,7 @@ auth.setupPassport = (server) => {
                     return done(null, false, { message: 'Incorrect username' });
                 }
 
-                hash = crypto.hash(password, author.salt)
+                const hash = crypto.hash(password, author.salt)
                 if (crypto.hash(password, author.salt) !== author.password) {
                     return done(null, false, { message: 'Wrong password' });
 

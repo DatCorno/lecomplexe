@@ -1,29 +1,29 @@
+import React, {Component} from 'react';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 
-function PostControlPanel() {
-    function handleNew(e) {
-        e.preventDefault();
+class PostControlPanel extends Component {
+    handleNew(e) {
         console.log('New post');
     }
 
-    function handleEdit(e) {
-        e.preventDefault();
+    handleEdit(e) {
         console.log('Edit post');
     }
 
-    function handleDelete(e) {
-        e.preventDefault();
+    handleDelete(e) {
         console.log('Delete post');
     }
 
-    return (
-        <ButtonGroup vertical className="control-panel">
-            <Button onClick={handleNew}>New post</Button>
-            <Button onClick={handleEdit}>Edit post</Button>
-            <Button onClick={handleDelete}>Delete post</Button>
-        </ButtonGroup>
-    );
+    render() {
+        return (
+            <ButtonGroup vertical className="control-panel">
+                <Button onClick={this.handleNew}>New post</Button>
+                <Button onClick={this.handleEdit} disabled={ this.props.post_id < 0 }>Edit post</Button>
+                <Button onClick={this.handleDelete} disabled={ this.props.post_id < 0 }>Delete post</Button>
+            </ButtonGroup>
+        );
+    }
 }
 
 export default PostControlPanel;

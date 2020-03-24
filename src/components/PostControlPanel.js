@@ -3,6 +3,14 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 
 class PostControlPanel extends Component {
+    constructor(props) {
+        super(props);
+
+        this.handleNew = this.handleNew.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+    }
+
     handleNew(e) {
         console.log('New post');
     }
